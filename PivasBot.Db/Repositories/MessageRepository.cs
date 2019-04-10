@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PivasBot.Db.Repositories
+﻿namespace PivasBot.Db.Repositories
 {
-    public class MessageRepository
+    public class MessageRepository : BaseRepository
     {
-
+        public MessageRepository(DbConnection dbConn) : base(dbConn, "yobirbot", "messages") { }
     }
 }

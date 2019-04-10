@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Text;
+﻿using PivasBot.Core.Enums;
+using PivasBot.Core.Services;
+using System;
 using System.Threading.Tasks;
-using PivasBot.Core.Enums;
-using PivasBot.Core.MessageStore.Repositories;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
@@ -13,13 +10,13 @@ namespace PivasBot.Core.Managers
 {
     public class BotCommandManager
     {
-        private MessageRepository _messageRepository;
-        private JokeRepository _jokeRepository;
+        private MessageService _messageService;
+        private JokeService _jokeService;
         private TelegramBotClient _bot;
-        public BotCommandManager(TelegramBotClient bot)
+        public BotCommandManager(TelegramBotClient bot, MessageService messageService, JokeService jokeService)
         {
-            _messageRepository = MessageRepository.Instance;
-            _jokeRepository = JokeRepository.Instance;
+            _messageService = messageService;
+            _jokeService = jokeService;
             _bot = bot;
         }
 
@@ -54,20 +51,20 @@ namespace PivasBot.Core.Managers
 
         public async Task GenerateRandomMessage(MessageEventArgs e)
         {
-            Message m1 = _messageRepository.GetRandomMessage();
-            Message m2 = _messageRepository.GetRandomMessage();
+            Message m1 = _messageService.GetRandomMessage();
+            Message m2 = _messageService.GetRandomMessage();
             await _bot.SendTextMessageAsync(e.Message.Chat.Id, m1.Text + " " + m2.Text);
         }
 
         public async Task PostJoke(MessageEventArgs e)
         {
-            await _bot.SendTextMessageAsync(e.Message.Chat.Id, _jokeRepository.GetJoke());
+            await _bot.SendTextMessageAsync(e.Message.Chat.Id, _jokeService.GetJoke());
         }
 
         public void AddJoke(MessageEventArgs e)
         {
             string jokeStr = e.Message.Text.Replace("/" + BotCommand.AddJoke, "", StringComparison.OrdinalIgnoreCase).Trim();
-            _jokeRepository.AddJoke(jokeStr);
+            _jokeService.AddJoke(jokeStr);
         }
     }
 }

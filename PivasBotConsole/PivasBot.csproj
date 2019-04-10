@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PivasBot.Core\PivasBot.Core.csproj" />
+    <ProjectReference Include="..\PivasBot.Db\PivasBot.Db.csproj" />
   </ItemGroup>
 
   <ItemGroup>

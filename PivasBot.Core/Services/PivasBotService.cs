@@ -1,6 +1,6 @@
 ﻿using PivasBot.Core.Enums;
 using PivasBot.Core.Managers;
-using PivasBot.Core.MessageStore.Repositories;
+using PivasBot.Db;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,14 +12,17 @@ namespace PivasBot.Core.Services
     public class PivasBotService
     {
         private TelegramBotClient _botClient;
-        private MessageRepository _messageRepository;
+        private MessageService _messageService;
+        private readonly JokeService _jokeService;
         private BotCommandManager _commandManager;
         private const int MessageLenLimit = 300;
-        public PivasBotService(string botToken)
+        public PivasBotService(string botToken, string dbConnectionString = null)
         {
+            DbConnection dbConn = new DbConnection(dbConnectionString);
             _botClient = new TelegramBotClient(botToken);
-            _messageRepository = MessageRepository.Instance;
-            _commandManager = new BotCommandManager(_botClient);
+            _messageService = new MessageService(dbConn);
+            _jokeService = new JokeService(dbConn);
+            _commandManager = new BotCommandManager(_botClient, _messageService, _jokeService);
         }
 
 
@@ -40,7 +43,7 @@ namespace PivasBot.Core.Services
                     e.Message.Text.Length < MessageLenLimit &&
                     !GetCommands().Any(x => e.Message.Text.ToLower().Contains(x.ToLower())))
                 {
-                    _messageRepository.AddMessage(e.Message);
+                    _messageService.AddMessage(e.Message);
                     Console.WriteLine("Saved Message");
                 }
             }
@@ -80,8 +83,8 @@ namespace PivasBot.Core.Services
 
         private async Task SendErrorMessage(long chatId, int messageId, string message)
         {
-           await _botClient.SendTextMessageAsync(chatId, $"Пидар, ты меня сломал. {message}",
-                replyToMessageId: messageId);
+            await _botClient.SendTextMessageAsync(chatId, $"Пидар, ты меня сломал. {message}",
+                 replyToMessageId: messageId);
         }
     }
 }
