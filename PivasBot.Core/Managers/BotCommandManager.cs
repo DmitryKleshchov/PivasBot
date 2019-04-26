@@ -2,6 +2,7 @@
 using PivasBot.Core.Services;
 using System;
 using System.Threading.Tasks;
+using PivasBot.Core.Models;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
@@ -25,7 +26,7 @@ namespace PivasBot.Core.Managers
             switch (command)
             {
                 case BotCommand.HochuSrati:
-                    Vsratsa(e);
+                    await Vsratsa(e);
                     break;
                 case BotCommand.Randomni:
                     await GenerateRandomMessage(e);
@@ -58,13 +59,19 @@ namespace PivasBot.Core.Managers
 
         public async Task PostJoke(MessageEventArgs e)
         {
-            await _bot.SendTextMessageAsync(e.Message.Chat.Id, _jokeService.GetJoke());
+            await _bot.SendTextMessageAsync(e.Message.Chat.Id, _jokeService.GetJoke().Text);
         }
 
         public void AddJoke(MessageEventArgs e)
         {
             string jokeStr = e.Message.Text.Replace("/" + BotCommand.AddJoke, "", StringComparison.OrdinalIgnoreCase).Trim();
-            _jokeService.AddJoke(jokeStr);
+            var joke = new Joke
+            {
+                Id = Guid.NewGuid().ToString(),
+                IsRead =  false,
+                Text = jokeStr
+            };
+            _jokeService.AddJoke(joke);
         }
     }
 }

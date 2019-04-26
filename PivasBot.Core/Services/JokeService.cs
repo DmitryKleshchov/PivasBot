@@ -1,6 +1,11 @@
 ﻿using Newtonsoft.Json;
+using PivasBot.Core.Models;
 using PivasBot.Db;
 using PivasBot.Db.Repositories;
+using SimpleFeedReader;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using PivasBot.Db.Extensions;
 
 namespace PivasBot.Core.Services
 {
@@ -13,14 +18,32 @@ namespace PivasBot.Core.Services
             _jokeRepository = new JokeRepository(dbConn);
         }
 
-        public string GetJoke()
+        public Joke GetJoke()
         {
-            return _jokeRepository.GetOneRandom()?["joke"].AsString;
+            Joke joke = _jokeRepository.GetOneRandom(@"{isRead: 0}")
+                .As<Joke>();
+            _jokeRepository.UpdateOne(joke.Id, "{\"isRead\": 1}");
+            return joke;
         }
 
-        public void AddJoke(string jokeStr)
+        public void AddJoke(Joke joke)
         {
-            _jokeRepository.InsertOne(JsonConvert.SerializeObject(new { joke = jokeStr }));
+            _jokeRepository.InsertOne(JsonConvert.SerializeObject(joke));
+        }
+
+        public void ConsumeJokesFromRss(params string[] rssUris)
+        {
+            IEnumerable<FeedItem> jokes = RssConsumer.RssConsumer.GetFeeds(rssUris);
+            foreach (FeedItem joke in jokes)
+            {
+                if (string.IsNullOrEmpty(joke.Content)) { continue; }
+                AddJoke(new Joke()
+                {
+                    Id = joke.Id,
+                    Text = joke.Content,
+                    IsRead = false
+                });
+            }
         }
     }
 }

@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PivasBot.Core", "PivasBot.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PivasBot.Db", "PivasBot.Db\PivasBot.Db.csproj", "{3B177387-3573-4987-A100-0CD7E3097AAD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PivasBot.RssConsumer", "PivasBot.RssConsumer\PivasBot.RssConsumer.csproj", "{9F93A9AE-3FDD-4827-B10B-0104FDA53502}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{3B177387-3573-4987-A100-0CD7E3097AAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B177387-3573-4987-A100-0CD7E3097AAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B177387-3573-4987-A100-0CD7E3097AAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F93A9AE-3FDD-4827-B10B-0104FDA53502}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F93A9AE-3FDD-4827-B10B-0104FDA53502}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F93A9AE-3FDD-4827-B10B-0104FDA53502}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F93A9AE-3FDD-4827-B10B-0104FDA53502}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
